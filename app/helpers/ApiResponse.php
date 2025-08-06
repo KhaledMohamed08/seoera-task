@@ -31,4 +31,14 @@ class ApiResponse
     {
         return self::error($message, $statusCode);
     }
+
+    public static function forbidden($message = 'Forbidden', $statusCode = 403)
+    {
+        return self::error($message, $statusCode);
+    }
+
+    public static function notFound($message = 'Not Found', $statusCode = 404)
+    {
+        return self::error($message, $statusCode);
+    }
 }

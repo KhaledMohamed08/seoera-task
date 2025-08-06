@@ -1,5 +1,6 @@
 <?php
 
+use Mockery\Matcher\Not;
 use App\helpers\ApiResponse;
 use App\Http\Middleware\ApiGuest;
 use Illuminate\Foundation\Application;
@@ -8,6 +9,8 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -30,5 +33,11 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->render(function (AuthenticationException $e) {
             return ApiResponse::unauthorized('You are not authenticated. Please log in to access this resource.', 401);
+        });
+        $exceptions->render(function (AccessDeniedHttpException $e) {
+            return ApiResponse::forbidden('You do not have permission to access this resource.', 403);
+        });
+        $exceptions->render(function (NotFoundHttpException $e) {
+            return ApiResponse::notFound('The requested resource was not found.', 404);
         });
     })->create();
