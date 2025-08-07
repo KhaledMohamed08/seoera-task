@@ -12,13 +12,13 @@ class UpdatePostRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
-        $postId = basename(request()->requestUri);
-        $post = app(PostService::class)->find($postId);
+    // public function authorize(): bool
+    // {
+    //     $postId = basename(request()->requestUri);
+    //     $post = app(PostService::class)->find($postId);
 
-        return auth('api')->check() && auth('api')->id() === $post->user_id;
-    }
+    //     return auth('api')->check() && auth('api')->id() === $post->user_id;
+    // }
 
     /**
      * Get the validation rules that apply to the request.
