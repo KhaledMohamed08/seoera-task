@@ -14,9 +14,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        api: __DIR__ . '/../routes/api.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -26,18 +26,28 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (ValidationException $e) {
-            return ApiResponse::validationError($e->errors(), 'Invalid Data', 422);
+            if (request()->expectsJson()) {
+                return ApiResponse::validationError($e->errors(), 'Invalid Data', 422);
+            }
         });
         $exceptions->render(function (QueryException $e) {
-            return ApiResponse::error('An unexpected error occurred while processing your request. Please try again later.', 500, ['error' => $e->getMessage()]);
+            if (request()->expectsJson()) {
+                return ApiResponse::error('An unexpected error occurred while processing your request. Please try again later.', 500, ['error' => $e->getMessage()]);
+            }
         });
         $exceptions->render(function (AuthenticationException $e) {
-            return ApiResponse::unauthorized('You are not authenticated. Please log in to access this resource.', 401);
+            if (request()->expectsJson()) {
+                return ApiResponse::unauthorized('You are not authenticated. Please log in to access this resource.', 401);
+            }
         });
         $exceptions->render(function (AccessDeniedHttpException $e) {
-            return ApiResponse::forbidden('You do not have permission to access this resource.', 403);
+            if (request()->expectsJson()) {
+                return ApiResponse::forbidden('You do not have permission to access this resource.', 403);
+            }
         });
         $exceptions->render(function (NotFoundHttpException $e) {
-            return ApiResponse::notFound('The requested resource was not found.', 404);
+            if (request()->expectsJson()) {
+                return ApiResponse::notFound('The requested resource was not found.', 404);
+            }
         });
     })->create();
