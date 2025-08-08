@@ -19,7 +19,7 @@ class PostFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->value('id'),
-            'title' => fake()->title(),
+            'title' => fake()->sentence(random_int(3, 6)),
             'description' => fake()->paragraph(),
             'contact_phone_number' => fake()->e164PhoneNumber(),
         ];

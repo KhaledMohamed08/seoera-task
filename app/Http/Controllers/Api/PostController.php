@@ -95,7 +95,7 @@ class PostController extends Controller
     {
         Gate::authorize('delete', $post);
         
-        $this->postService->destroy($post);
+        $this->postService->delete($post);
 
         return ApiResponse::success(
             null,

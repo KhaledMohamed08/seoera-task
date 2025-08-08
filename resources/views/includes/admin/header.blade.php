@@ -170,14 +170,14 @@
 
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                     data-bs-toggle="dropdown">
-                    <img src="{{ asset("assets/img/profile-img.jpg") }}" alt="Profile" class="rounded-circle">
-                    <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+                    {{-- <img src="{{ asset("assets/img/profile-img.jpg") }}" alt="Profile" class="rounded-circle"> --}}
+                    <span class="d-none d-md-block dropdown-toggle ps-2"><strong>{{ 'Hi, ' . explode(' ', auth()->user()->name)[0] }}</strong></span>
                 </a><!-- End Profile Iamge Icon -->
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
-                        <h6>Kevin Anderson</h6>
-                        <span>Web Designer</span>
+                        <h6>{{ auth()->user()->name }}</h6>
+                        <span>{{ auth()->user()->type }}</span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
@@ -208,7 +208,7 @@
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Sign Out</span>
                         </a> --}}
-                        <form action="#" method="POST">
+                        <form action="{{ route('admin.logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="dropdown-item d-flex align-items-center">
                                 <i class="bi bi-box-arrow-right"></i>

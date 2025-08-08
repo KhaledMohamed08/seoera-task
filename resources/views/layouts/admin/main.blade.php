@@ -4,15 +4,15 @@
 
     @include('includes.admin.side')
 
-        <main id="main" class="main">
+    <main id="main" class="main">
 
-            <x-admin.page-title :title="trim($__env->yieldContent('title'))" />
+        <x-admin.page-title :title="trim($__env->yieldContent('title'))" />
+        <x-admin.ui.alert />
+
+        @yield('content')
 
 
-            @yield('content')
-
-
-        </main><!-- End #main -->
+    </main><!-- End #main -->
 
     @include('includes.admin.footer')
 @endsection

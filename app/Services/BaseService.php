@@ -44,7 +44,7 @@ class BaseService
         return $model;
     }
 
-    public function destroy(Model $model)
+    public function delete(Model $model)
     {
         $model->delete();
         return $model;

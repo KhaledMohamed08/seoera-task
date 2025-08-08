@@ -20,7 +20,7 @@
                       <i class="bi bi-person-bounding-box"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>145</h6>
+                      <h6>{{ $data['usersCount'] }}</h6>
                       <span class="text-primary small pt-1 fw-bold">all users</span>
 
                     </div>
@@ -42,7 +42,7 @@
                       <i class="bi bi-postcard-heart"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>3,264</h6>
+                      <h6>{{ $data['postsCount'] }}</h6>
                       <span class="text-success small pt-1 fw-bold">all posts</span>
 
                     </div>
