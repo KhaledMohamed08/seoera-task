@@ -89,6 +89,8 @@ const notifications = new NotificationManager({
 // Example Laravel Echo usage
 window.Echo.channel('posts')
   .listen('.post.created', (e) => {
+    console.log(e.post);
+    
     notifications.addNotification({
       title: `New Post: ${e.post.title}`,
       iconClass: 'bi-bell text-primary',

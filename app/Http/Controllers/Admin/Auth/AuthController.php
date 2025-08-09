@@ -22,22 +22,29 @@ class AuthController extends Controller
 
         $credentials = $this->prepareCredentials($validated['data'], $validated['password']);
 
-        if (! Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
             return back()
                 ->withInput($request->only('data'))
                 ->withErrors(['fail' => 'Invalid email/phone or password.']);
         }
 
-        if (Auth::user()->type !== 'admin') {
+        $user = Auth::user();
+        if ($user->type !== 'admin') {
             Auth::logout();
             return redirect()->route('login')
                 ->withErrors(['fail' => 'You do not have admin access.']);
         }
 
         $request->session()->regenerate();
+        
+        if ($request->boolean('remember')) {
+            Auth::setRemember(true);
+        }
+
 
         return redirect()->route('admin.index');
     }
+
 
     public function logout()
     {

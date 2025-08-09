@@ -18,7 +18,6 @@
                             <th scope="col">Title</th>
                             <th scope="col">Description</th>
                             <th scope="col">Contact Info</th>
-                            <th scope="col">Is Active</th>
                             <th scope="col">Created At</th>
                             <th scope="col">Actions</th>
                         </tr>
@@ -30,20 +29,15 @@
                                 </td>
                                 <td>{{ $post->user->name }}</td>
                                 <td>{{ $post->title }}</td>
-                                <td title="{{ $post->description }}">
-                                    {{ strlen($post->description) <= 50 ? $post->description : substr($post->description, 0, 50) . '...' }}
-                                </td>
+                                <td title="{{ $post->description }}">{{ strlen($post->description) <= 50 ? $post->description : substr($post->description, 0, 50) . '...' }}</td>
                                 <td><a href="tel:{{ $post->contact_phone_number }}">{{ $post->contact_phone_number }}</a></td>
-                                <td class="text-{{ $post->is_active ? 'success' : 'danger' }}">
-                                    {{ $post->is_active ? 'Active' : 'Inactive' }}</td>
                                 <td>{{ $post->created_at->format('F j, Y, g:i a') }}</td>
-                                <td>
-                                    <button title="show" class="btn btn-primary btn-sm"><i class="bi bi-eye-fill"></i></button>
+                                <td class="d-flex gap-1">
+                                    {{-- <button title="show" class="btn btn-primary btn-sm"><i class="bi bi-eye-fill"></i></button> --}}
                                     <a title="edit" class="btn btn-success btn-sm"
                                         href="{{ route('posts.update', $post->id) }}"><i
                                             class="bi bi-pencil-square"></i></a>
-                                    <form id="delete_form" action="{{ route('posts.delete', $post->id) }}" method="POST"
-                                        style="display: inline;">
+                                    <form id="delete_form" action="{{ route('posts.delete', $post->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button title="delete" type="submit" class="btn btn-danger btn-sm"><i
