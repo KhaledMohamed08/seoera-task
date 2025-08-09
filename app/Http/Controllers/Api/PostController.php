@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Post;
+use App\Events\PostCreated;
 use App\helpers\ApiResponse;
 use App\Services\PostService;
 use App\Http\Controllers\Controller;
@@ -54,7 +55,10 @@ class PostController extends Controller
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
 
-        $this->postService->store($data);
+        $post = $this->postService->store($data);
+
+        broadcast(new PostCreated($post))->toOthers();
+
 
         return ApiResponse::success(
             null,

@@ -7,6 +7,97 @@ import "../../vendor/simple-datatables/simple-datatables.js";
 import "../../vendor/tinymce/tinymce.min.js";
 import "../../vendor/php-email-form/validate.js";
 
+import "../bootstrap.js";
+
+class NotificationManager {
+  constructor({
+    badgeSelector,
+    headerSelector,
+    itemsContainerSelector,
+    dropdownToggleSelector,
+  }) {
+    this.badge = document.querySelector(badgeSelector);
+    this.header = document.querySelector(headerSelector);
+    this.itemsContainer = document.querySelector(itemsContainerSelector);
+    this.dropdownToggle = document.querySelector(dropdownToggleSelector);
+
+    this.count = 0;
+
+    this._bindDropdownOpen();
+    this._updateUI();
+  }
+
+  _bindDropdownOpen() {
+    if (!this.dropdownToggle) return;
+
+    // Reset count when dropdown opens (Bootstrap 5 event)
+    this.dropdownToggle.addEventListener('show.bs.dropdown', () => {
+      this.resetCount();
+    });
+  }
+
+  _updateUI() {
+    if (this.count > 0) {
+      this.badge.textContent = this.count;
+      this.badge.style.display = 'inline-block';
+      this.header.textContent = `You have ${this.count} new notification${this.count > 1 ? 's' : ''}`;
+    } else {
+      this.badge.style.display = 'none';
+      this.header.textContent = 'No new notifications';
+    }
+  }
+
+  addNotification({ title, message = '', iconClass = 'bi-info-circle text-primary', time = 'Just now' }) {
+    this.count++;
+    this._updateUI();
+
+    // Add divider if not first notification
+    if (this.count > 1) {
+      const divider = document.createElement('li');
+      divider.innerHTML = `<hr class="dropdown-divider">`;
+      this.itemsContainer.appendChild(divider);
+    }
+
+    // Create notification item
+    const li = document.createElement('li');
+    li.classList.add('notification-item', 'd-flex', 'align-items-start', 'mb-3');
+    li.innerHTML = `
+      <i class="bi ${iconClass} me-3 fs-4"></i>
+      <div>
+        <h6 class="mb-1">${title}</h6>
+        ${message ? `<p class="mb-1 small text-muted">${message}</p>` : ''}
+        <p class="mb-0 small text-muted">${time}</p>
+      </div>
+    `;
+    this.itemsContainer.appendChild(li);
+  }
+
+  resetCount() {
+    this.count = 0;
+    this._updateUI();
+  }
+}
+
+// Usage: match your HTML selectors, note the new container for notifications
+const notifications = new NotificationManager({
+  badgeSelector: '#notification-badge',
+  headerSelector: '#notification-header',
+  itemsContainerSelector: '#notification-items-container',
+  dropdownToggleSelector: '.nav-item.dropdown .nav-link.nav-icon',
+});
+
+// Example Laravel Echo usage
+window.Echo.channel('posts')
+  .listen('.post.created', (e) => {
+    notifications.addNotification({
+      title: `New Post: ${e.post.title}`,
+      iconClass: 'bi-bell text-primary',
+      time: 'Just now',
+    });
+  });
+
+
+
 /**
 * Template Name: NiceAdmin
 * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
