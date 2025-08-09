@@ -15,22 +15,28 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $data = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6',
+        $validated = $request->validate([
+            'data'     => 'required|string',
+            'password' => 'required|string|min:6',
         ]);
 
-        if (Auth::attempt($data)) {
-            
-            if (Auth::user()->type !== 'admin') {
-                Auth::logout();
-                return redirect()->route('login')->withErrors(['fail' => 'You do not have admin access.']);
-            }
+        $credentials = $this->prepareCredentials($validated['data'], $validated['password']);
 
-            session()->regenerate();
-
-            return redirect()->route('admin.index');
+        if (! Auth::attempt($credentials)) {
+            return back()
+                ->withInput($request->only('data'))
+                ->withErrors(['fail' => 'Invalid email/phone or password.']);
         }
+
+        if (Auth::user()->type !== 'admin') {
+            Auth::logout();
+            return redirect()->route('login')
+                ->withErrors(['fail' => 'You do not have admin access.']);
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->route('admin.index');
     }
 
     public function logout()
@@ -40,5 +46,14 @@ class AuthController extends Controller
         session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+
+    private function prepareCredentials(string $data, string $password): array
+    {
+        if (filter_var($data, FILTER_VALIDATE_EMAIL)) {
+            return ['email' => strtolower($data), 'password' => $password];
+        }
+
+        return ['phone' => $data, 'password' => $password];
     }
 }

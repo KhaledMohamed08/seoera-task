@@ -28,11 +28,11 @@
                   <form action="{{ route('admin.login') }}" method="POST" class="row g-3 needs-validation" novalidate>
                     @csrf
                     <div class="col-12">
-                      <label for="yourEmail" class="form-label">Email</label>
+                      <label for="yourData" class="form-label">Your Email or Phone</label>
                       <div class="input-group has-validation">
                         <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        <input type="text" name="email" class="form-control" id="yourEmail" required>
-                        <div class="invalid-feedback">Please enter your email.</div>
+                        <input type="text" name="data" class="form-control" id="yourData" required>
+                        <div class="invalid-feedback">Please enter your Email or Phone.</div>
                       </div>
                     </div>
 

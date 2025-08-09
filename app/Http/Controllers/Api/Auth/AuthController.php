@@ -29,15 +29,15 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|string|email',
+        $data = $request->validate([
+            'data'     => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $this->prepareCredentials($data['data'], $data['password']);
 
         if (! $token = auth('api')->attempt($credentials)) {
-            return ApiResponse::error('Unauthorized', 401);
+            return ApiResponse::error('Invalid email/phone or password', 401);
         }
 
         return $this->respondWithToken($token);
@@ -89,5 +89,14 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return ApiResponse::error("$errorMessage ({$e->getMessage()})", 500);
         }
+    }
+
+    private function prepareCredentials(string $data, string $password): array
+    {
+        if (filter_var($data, FILTER_VALIDATE_EMAIL)) {
+            return ['email' => strtolower($data), 'password' => $password];
+        }
+
+        return ['phone' => $data, 'password' => $password];
     }
 }
