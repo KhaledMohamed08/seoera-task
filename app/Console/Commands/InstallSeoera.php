@@ -59,12 +59,14 @@ class InstallSeoera extends Command
 
         if ($this->confirm('Do you want to run the seeders now?', true)) {
             $userCount = $this->ask('How many users do you want to seed?', 10);
-            config(['seoera_seeder_count.user_count' => $userCount]);
+            config(['seeder_count.user_count' => $userCount]);
+            $this->info("Seeding {$userCount} users...");
             $this->call('db:seed', ['--class' => 'UserSeeder']);
             $this->info("✅ Created {$userCount} users");
 
             $postCount = $this->ask('How many posts do you want to seed?', 50);
-            config(['seoera_seeder_count.post_count' => $postCount]);
+            config(['seeder_count.post_count' => $postCount]);
+            $this->info("Seeding {$postCount} posts...");
             $this->call('db:seed', ['--class' => 'PostSeeder']);
             $this->info("✅ Created {$postCount} posts");
         }
